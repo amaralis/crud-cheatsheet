@@ -29,6 +29,7 @@ class UserFactory extends Factory
             'user_type' => '1', // Standard user for our purposes on Bandwagon. Admin is 0.
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'uuid' => Str::uuid(),
             'remember_token' => Str::random(10),
         ];
     }

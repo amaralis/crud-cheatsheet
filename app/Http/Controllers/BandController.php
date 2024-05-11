@@ -13,7 +13,7 @@ class BandController extends Controller
     public function index()
     {
         $bands = Band::all();
-        return view('bands.all', compact('bands'));
+        return view('bands.view_all', compact('bands'));
     }
 
     /**
@@ -35,9 +35,9 @@ class BandController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Band $band)
     {
-        //
+        return view('bands.view_band', compact('band'));
     }
 
     /**

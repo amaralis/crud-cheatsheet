@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Album;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Song>
@@ -18,7 +18,8 @@ class SongFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->sentence(3)
+            'name' => fake()->sentence(3),
+            'uuid' => Str::uuid()
         ];
     }
 }

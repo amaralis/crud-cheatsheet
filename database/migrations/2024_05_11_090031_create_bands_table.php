@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name', length: 100);
             $table->string('cover_image', length: 500)->nullable();
             $table->timestamps();
+            $table->uuid('uuid')->unique();
         });
     }
 
