@@ -2,11 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Band;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class BandController extends Controller
+class BandController extends Controller //implements HasMiddleware
 {
+    // public static function middleware(): array
+    // {
+    //     return [
+    //         'auth',
+    //         new Middleware('log', only: ['index']),
+    //         new Middleware('subscribed', except: ['store']),
+    //     ];
+    // }
+    
     /**
      * Display a listing of the resource.
      */
@@ -21,7 +31,7 @@ class BandController extends Controller
      */
     public function create()
     {
-        //
+        return view('bands.view_create');
     }
 
     /**

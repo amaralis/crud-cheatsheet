@@ -16,7 +16,21 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
+                <!-- Collapsible wrapper -->
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <!-- Left links -->
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                        <a class="nav-link" href="{{ route('bands.create') }}">Add Band</a>
+                        </li>
+                    </ul>
+                    <!-- Left links -->
+                </div>
+                <!-- Collapsible wrapper -->
+
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    
                     @guest
                         <ul class="navbar-nav">
                             <li class="nav-item">
@@ -28,7 +42,8 @@
                                 <a class="nav-link {{ request()->is('register') ? 'active' : '' }}" href="{{ route('register') }}">Register</a>
                             </li>
                         </ul>                        
-                        @endguest
+                    @endguest
+
                     @auth
                         <ul class="navbar-nav">
                             <li class="nav-item">

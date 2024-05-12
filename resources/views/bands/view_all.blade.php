@@ -1,6 +1,5 @@
 @extends('layouts.master')
 @section('content')
-{{-- {{ dd($bands) }} --}}
     @foreach ($bands as $band)
         <div class="bg-primary bg-gradient">
             <h1>Band name:</h1>
