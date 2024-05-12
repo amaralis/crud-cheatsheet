@@ -5,11 +5,8 @@
             <h1>Band name:</h1>
             <h2>{{ $band->name }}</h2>
             <p>UUID: {{ $band->uuid }}</p>
-
-            <div>
-                <a href="{{ route('bands.show', $band->uuid) }}" class="btn btn-warning">View band</a>
-
-            </div>
+            {{-- {{dd(Storage::url("band-pics/".$band->cover_image))}} --}}
+            <img src="{{ Storage::url("band-pics/".$band->cover_image) }}" alt="">
 
             <h1>Albums:</h1>
             

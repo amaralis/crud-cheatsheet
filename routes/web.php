@@ -45,8 +45,9 @@ Para melhorar segurança e não expor identificadores da DB ao público (ver che
 
 /*
 Criamos o resource controller sem as routes que não vão precisar de middleware para verificar autenticação. Por outras palavras, todas as routes agrupadas abaixo serão controladas pelo middleware 'auth'.
-As que não precisem deste controlo ficam necessariamente definidas *depois do grupo*, sob pena de colisão de rotas. Isto parece ir contra a documentação (https://laravel.com/docs/11.x/controllers#restful-supplementing-resource-controllers)
-mas atentemos ao facto de não estarmos a *adicionar* uma rota para além das por defeito, mas sim a controlar uma já existente no controlador. Se a rota bands.show constar antes do grupo controlado por middleware,
+As que não precisem deste controlo ficam necessariamente definidas *depois do grupo*, sob pena de colisão de rotas (excepto para '/'). Isto parece ir contra a documentação 
+(ver https://laravel.com/docs/11.x/controllers#restful-supplementing-resource-controllers)
+mas atentemos ao facto de não estarmos a *adicionar* uma rota para além das por defeito, mas sim a condicionar uma já existente. Se a rota bands.show constar antes do grupo condicionado por middleware,
 ao tentarmos invocar o método get() na rota bands.create (URI: /bands/create), será antes invocado o método get() na rota bands.show (URI /bands/{uuid}).
 Apenas podemos presumir que uma colisão no sentido oposto não acontece porque, na definição do grupo de rotas validado por middleware, excluímos especificamente o método show().
 
@@ -55,7 +56,7 @@ um resource controller retorna um objecto \Illuminate\Routing\PendingResourceReg
 
 */
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['can:create,App\Models\User', 'auth'])->group(function () { // middleware 'can' usa a UserPolicy em App\Policies\UserPolicy. Escrever o nosso seria fácil. O desafio está em usar as ferramentas que já vêm com a framework.
     Route::resource('bands', BandController::class)->except([
         'index', 'show'
     ]);    
@@ -76,4 +77,11 @@ servidor ao mesmo tempo mas, para os efeitos deste exercício, passa (espero eu)
 
 Quando invocamos o método show() do controller, o que passamos a partir do botão para ver a banda deve ser o uuid, não o objecto $band, uma vez que a framework vai presumir que estamos a passar o id do objecto e este torna-se exposto no URL:
 ver route model binding: https://laravel.com/docs/11.x/routing#route-model-binding e o URL da href do próprio botão no browser (terminará no URI /band/[id-da-banda])
+*/
+
+/*
+Nota: O método de armazenamento é tão desastroso quanto a documentação existente.
+Não só não descobrimos como armazenar ficheiros fora do directório 'storage', como nos vemos forçados a acrescentar o directório em que os ficheiros são guardados manualmente quando lhes queremos aceder
+(ex: Storage::url("band-pics/".$band->cover_image))
+Existem outras soluções, mas não serão implementadas com o tempo disponível.
 */

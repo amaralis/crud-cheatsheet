@@ -5,10 +5,16 @@
             <h1>Band name:</h1>
             <h2>{{ $band->name }}</h2>
             <p>UUID: {{ $band->uuid }}</p>
+            @if ($band->cover_image !== null)
+                
+                <div class="w-25">
+                    <img src="{{ asset($band->cover_image) }}" alt="Band picture">
+                </div>
+
+            @endif
 
             <div>
                 <a href="{{ route('bands.show', $band->uuid) }}" class="btn btn-warning">View band</a>
-
             </div>
 
             <h1>Albums:</h1>

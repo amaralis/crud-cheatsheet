@@ -3,20 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Band;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Support\Facades\Storage;
 
 class BandController extends Controller //implements HasMiddleware
-{
-    // public static function middleware(): array
-    // {
-    //     return [
-    //         'auth',
-    //         new Middleware('log', only: ['index']),
-    //         new Middleware('subscribed', except: ['store']),
-    //     ];
-    // }
-    
+{    
     /**
      * Display a listing of the resource.
      */
@@ -39,7 +31,17 @@ class BandController extends Controller //implements HasMiddleware
      */
     public function store(Request $request)
     {
-        //
+        // Sem outras validações. Em contexto comercial, seria necessário limitar, por exemplo, tamanho, e dar feedback sobre sucesso ou não do upload
+        $filePath = Storage::disk('public')->put('band-pics', $request->file('file'));
+        $bandName = $request->name;
+        $band = new Band;
+        $band->name = $bandName;
+        $band->cover_image = pathinfo($filePath)['basename'];
+        $band->uuid = Str::uuid();
+        $band->save();
+        $band->refresh();
+        
+        return redirect()->route('bands.show', $band->uuid);
     }
 
     /**
