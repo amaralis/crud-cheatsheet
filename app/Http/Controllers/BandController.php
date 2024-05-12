@@ -35,8 +35,9 @@ class BandController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Band $band)
+    public function show(string $uuid)
     {
+        $band = Band::where('uuid', $uuid)->first();
         return view('bands.view_band', compact('band'));
     }
 

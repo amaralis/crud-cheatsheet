@@ -27,19 +27,35 @@ Para melhorar segurança e não expor identificadores da DB ao público (ver che
     ao público dados da DB que podem ser usados para, por exemplo, fazer um scrape iterativo dos conteúdos, ou adivinhar o volume de armazenamento.
     
     A metodologia de implementação consiste no uso de Str::uuid() numa coluna 'uuid' indexada. Esta indexação representa uma penalização de performance da DB em acções de inserção e eliminação de registos que possuam esta coluna,
-    embora seja relativamente consensual que o impacto no desempenho é compensado pelos benefícios do padrão (ver, por exemplo, https://itnext.io/laravel-the-mysterious-ordered-uuid-29e7500b4f8 e 
-    https://www.reddit.com/r/PostgreSQL/comments/mi78aq/any_significant_performance_disadvantage_to_using/). A nossa implementação vai depender do tamanho da nossa DB. Se não for muito grande, não é necessário indexar os uuids e o
-    impacto sobre o desempenho de lookups é negligenciável. Caso contrário, sofreremos o impacto, mas manteremos o benefício de segurança que a utilização deste registo fornece (nomeadamente, não expor ao público o tmaanho da nossa DB).
+    embora seja relativamente consensual que o impacto no desempenho é compensado pelos benefícios do padrão (ver, por exemplo, https://www.reddit.com/r/PostgreSQL/comments/mi78aq/any_significant_performance_disadvantage_to_using/).
+    A nossa implementação vai depender do tamanho da nossa DB. Se não for muito grande, não é necessário indexar os uuids e o
+    impacto sobre o desempenho de lookups é negligenciável. Caso contrário, sofreremos o impacto, mas manteremos o benefício de segurança que a utilização deste registo fornece (nomeadamente, não expor ao público o volume de
+    armazenamento da nossa DB).
     
-    Não é usado Str::orderedUuid() porque não será preciso ordenar nada com base nos uuids. Para isso existem as chaves primárias. Não usar esta forma de uuid tem ainda a vantagem de não expor o timestamp das operações INSERT, uma vez que,
-    mais uma vez, o uuid não é criptograficamente seguro, mas sim simplesmente codificado, e o timestamp em orderedUuid() consta do início da string.
+    Não é usado Str::orderedUuid() (ver, por exemplo, https://itnext.io/laravel-the-mysterious-ordered-uuid-29e7500b4f8) porque não será preciso ordenar nada com base nos uuids. Para isso existem as chaves primárias. Não usar esta
+    forma de uuid tem ainda a vantagem de não expor o timestamp das operações INSERT, uma vez que, mais uma vez, o uuid não é criptograficamente seguro, mas sim simplesmente codificado, e o timestamp em orderedUuid() consta do início da string.
     
-    Para os efeitos deste trabalho, foi indexada a coluna para presumir a pior performance possível (https://laravel.com/docs/11.x/migrations#available-index-types). Uma vez que não é chave, não é usado o trait 'hasUuids' (ver https://laravel.com/docs/11.x/eloquent#uuid-and-ulid-keys)
+    Para os efeitos deste trabalho, foi indexada a coluna para presumir a pior performance possível (https://laravel.com/docs/11.x/migrations#available-index-types). Uma vez que não é chave, não é usado o trait 'hasUuids'
+    (ver https://laravel.com/docs/11.x/eloquent#uuid-and-ulid-keys)
 */
 
 
 Route::get('/', [BandController::class, 'index'])->name('home');
-// Route::get('/show/{uuid}', [BandController::class, 'show'])->name('band.show'); // Desnecessário. Deixar o resource controller tratar do assunto. Routes criadas automaticamente.
-// O controller não quer saber o que passamos a partir da view (por exemplo, para ver uma banda específica; só sabe que precisa de um argumento no método show()), nós é que decidimos o que queremos que apareça no url (no nosso caso, o uuid).
-// Não conheço as melhores práticas para isto, mas já que os nossos objectos não são gigantescos vou passá-los inteiros da view para o controller e a partir daí decido o que preciso. Também evita um lookup à DB.
+/*
+Nota 5:
+
+Route::get('/show/{uuid}', [BandController::class, 'show'])->name('band.show'); // Desnecessário. Deixar o resource controller tratar do assunto, como de seguida. Routes criadas automaticamente. Para atribuir middleware pode criar 
+problemas que só se resolvem declarando cada route individualmente, resultando na obsolescência de Route::resource(). Descobrirei a verdade disso por mim mesmo.
+
+Embora tenha criado as routes todas por si, os métodos do controller não querem saber o que passamos como argumento. Por exemplo, para ver uma banda específica, embora o método index() já tenha um argumento $id, isto é apenas por conveniência;
+podemos passar e usar qualquer argumento para continuar a executar a lógica que queremos. Para mostrar uma banda, o controller só sabe que precisa de um argumento no método show(), nós é que decidimos o que queremos que apareça no url 
+(no nosso caso, o uuid, não o id).
+
+Nota 6:
+Em BandController::index() crio um array com todas as nossas bandas. Isto é, admissivelmente, péssima prática, devendo usar-se algum tipo de chunking para evitar carregar potencialmente milhares de registos para a memória do nosso
+servidor ao mesmo tempo mas, para os efeitos deste exercício, passa (espero eu).
+
+Quando invocamos o método show() do controller, o que passamos a partir do botão para ver a banda deve ser o uuid, não o objecto $band, uma vez que a framework vai presumir que estamos a passar o id do objecto e este torna-se exposto. 
+*/
+
 Route::resource('bands', BandController::class);

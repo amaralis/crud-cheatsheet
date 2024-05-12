@@ -16,5 +16,4 @@ class Band extends Model
     {
         return $this->hasMany(Album::class);
     }
-
 }

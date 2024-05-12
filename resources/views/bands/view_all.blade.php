@@ -1,14 +1,14 @@
 @extends('layouts.master')
 @section('content')
+{{-- {{ dd($bands) }} --}}
     @foreach ($bands as $band)
         <div class="bg-primary bg-gradient">
             <h1>Band name:</h1>
             <h2>{{ $band->name }}</h2>
-            <p>Id: {{ $band->id }}</p>
             <p>UUID: {{ $band->uuid }}</p>
 
             <div>
-                <a href="{{ route('bands.show', $band) }}" class="btn btn-warning">View band</a>
+                <a href="{{ route('bands.show', $band->uuid) }}" class="btn btn-warning">View band</a>
 
             </div>
 
