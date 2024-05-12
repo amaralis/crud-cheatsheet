@@ -7,8 +7,8 @@
             <p>UUID: {{ $band->uuid }}</p>
             @if ($band->cover_image !== null)
                 
-                <div class="w-25">
-                    <img src="{{ asset($band->cover_image) }}" alt="Band picture">
+                <div class="band-image">
+                    <img src="{{ Storage::url("band-pics/".$band->cover_image) }}" alt="">
                 </div>
 
             @endif

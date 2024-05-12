@@ -1,0 +1,3 @@
+.band-image img {
+    width: clamp(5cm, 10cm, 25dvw);
+}

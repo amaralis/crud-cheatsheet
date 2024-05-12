@@ -72,16 +72,16 @@ isto é apenas por conveniência; podemos passar e usar qualquer argumento para 
 decidimos o que queremos que apareça no url (no nosso caso, o uuid, não o id).
 
 Nota 6:
-Em BandController::index() crio um array com todas as nossas bandas. Isto é, admissivelmente, péssima prática, devendo usar-se algum tipo de chunking para evitar carregar potencialmente milhares de registos para a memória do nosso
+Em BandController::index() e outros semelhantes crio um array com todas as nossas bandas. Isto é, admissivelmente, péssima prática, devendo usar-se algum tipo de chunking para evitar carregar potencialmente milhares de registos para a memória do nosso
 servidor ao mesmo tempo mas, para os efeitos deste exercício, passa (espero eu).
 
 Quando invocamos o método show() do controller, o que passamos a partir do botão para ver a banda deve ser o uuid, não o objecto $band, uma vez que a framework vai presumir que estamos a passar o id do objecto e este torna-se exposto no URL:
-ver route model binding: https://laravel.com/docs/11.x/routing#route-model-binding e o URL da href do próprio botão no browser (terminará no URI /band/[id-da-banda])
+Não consigo explicar se se trata de route model binding, implicit binding, ou outro mecanismo
 */
 
 /*
 Nota: O método de armazenamento é tão desastroso quanto a documentação existente.
 Não só não descobrimos como armazenar ficheiros fora do directório 'storage', como nos vemos forçados a acrescentar o directório em que os ficheiros são guardados manualmente quando lhes queremos aceder
 (ex: Storage::url("band-pics/".$band->cover_image))
-Existem outras soluções, mas não serão implementadas com o tempo disponível.
+Existem outras soluções (idealmente, acrescentando um disk na config do filesystem), mas não serão implementadas com o tempo disponível.
 */

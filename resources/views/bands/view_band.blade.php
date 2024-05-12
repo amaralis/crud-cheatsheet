@@ -5,9 +5,13 @@
             <h1>Band name:</h1>
             <h2>{{ $band->name }}</h2>
             <p>UUID: {{ $band->uuid }}</p>
-            {{-- {{dd(Storage::url("band-pics/".$band->cover_image))}} --}}
-            <img src="{{ Storage::url("band-pics/".$band->cover_image) }}" alt="">
 
+            @if ($band->cover_image !== null)
+                <div class="band-image">
+                    <img src="{{ Storage::url("band-pics/".$band->cover_image) }}" alt="">
+                </div>
+            @endif
+            
             <h1>Albums:</h1>
             
             @foreach ($band->albums as $album)
