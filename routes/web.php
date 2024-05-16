@@ -72,8 +72,9 @@ isto é apenas por conveniência; podemos passar e usar qualquer argumento para 
 decidimos o que queremos que apareça no url (no nosso caso, o uuid, não o id).
 
 Nota 6:
-Em BandController::index() e outros semelhantes crio um array com todas as nossas bandas. Isto é, admissivelmente, péssima prática, devendo usar-se algum tipo de chunking para evitar carregar potencialmente milhares de registos para a memória do nosso
-servidor ao mesmo tempo mas, para os efeitos deste exercício, passa (espero eu).
+Em BandController::index() e outros semelhantes crio um array com todas as nossas bandas. Isto é, admissivelmente, péssima prática, devendo usar-se algum tipo de chunking
+para evitar carregar potencialmente milhares de registos para a memória do nosso servidor ao mesmo tempo mas, para os efeitos deste exercício, passa (espero eu).
+Naturalmente, estamos também a ignorar necessidades de paginação.
 
 Quando invocamos o método show() do controller, o que passamos a partir do botão para ver a banda deve ser o uuid, não o objecto $band, uma vez que a framework vai presumir que estamos a passar o id do objecto e este torna-se exposto no URL:
 Não consigo explicar se se trata de route model binding, implicit binding, ou outro mecanismo
@@ -84,4 +85,7 @@ Nota: O método de armazenamento é tão desastroso quanto a documentação exis
 Descobrimos como armazenar ficheiros fora do directório 'storage', configurando um novo disk e fornecendo assim um URL mais user friendly e não anunciando tão explicitamente que a aplicação usa esta framework,
 mas vemo-nos forçados a acrescentar o directório em que os ficheiros são guardados manualmente quando lhes queremos aceder através da facade Storage
 (ex: Storage::url("images/".$band->cover_image))
+Suspeito que isto seja, ou um bug, ou uma feature do Laravel: façamos o que fizermos, existirá sempre *alguma* coisa em app/public/storage que pode ser acedida por algum mecanismo da framework.
+Verifiquei todos os symlinks, todas as referências ao directório storage, inclusivamente tentei gravar uma imagem com a config do disk 'public' comentada. Sem sucesso. É *sempre*
+criado um symlink em storage. 
 */
