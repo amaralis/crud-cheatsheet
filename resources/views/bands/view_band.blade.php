@@ -8,7 +8,7 @@
 
             @if ($band->cover_image !== null)
                 <div class="band-image">
-                    <img src="{{ Storage::url("band-pics/".$band->cover_image) }}" alt="">
+                    <img src="{{ Storage::url('images/'.$band->cover_image) }}" alt="">
                 </div>
             @endif
             

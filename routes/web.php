@@ -81,7 +81,7 @@ Não consigo explicar se se trata de route model binding, implicit binding, ou o
 
 /*
 Nota: O método de armazenamento é tão desastroso quanto a documentação existente.
-Não só não descobrimos como armazenar ficheiros fora do directório 'storage', como nos vemos forçados a acrescentar o directório em que os ficheiros são guardados manualmente quando lhes queremos aceder
-(ex: Storage::url("band-pics/".$band->cover_image))
-Existem outras soluções (idealmente, acrescentando um disk na config do filesystem), mas não serão implementadas com o tempo disponível.
+Descobrimos como armazenar ficheiros fora do directório 'storage', configurando um novo disk e fornecendo assim um URL mais user friendly e não anunciando tão explicitamente que a aplicação usa esta framework,
+mas vemo-nos forçados a acrescentar o directório em que os ficheiros são guardados manualmente quando lhes queremos aceder através da facade Storage
+(ex: Storage::url("images/".$band->cover_image))
 */
