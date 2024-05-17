@@ -66,7 +66,7 @@
             </div>
         </nav>
 
-        <div class="container">
+        <div class="container mx-0 px-0 mx-sm-auto px-md-auto">
             @yield('content')
         </div>
         
