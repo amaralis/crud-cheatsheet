@@ -9,8 +9,8 @@
     <title>Bandwagon</title>
 </head>
 
-<body>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+<body style="background-color:#dde7f773">
+        <nav class="navbar navbar-expand-lg bg-body-secondary">
             <div class="container">
                 <a class="navbar-brand" href="{{ route('home') }}">BANDWAGON</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

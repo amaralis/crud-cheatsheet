@@ -42,7 +42,8 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        //
+        return $user->user_type === 0;
+
     }
 
     /**
@@ -50,7 +51,8 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        //
+        return $user->user_type === 0;
+
     }
 
     /**

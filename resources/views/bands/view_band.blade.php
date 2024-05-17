@@ -23,7 +23,7 @@
         
                     @foreach ($band->albums as $album)
 
-                        <div class="my-3 py-3 rounded px-0 px-md-3" style="background-color:#5889d1">
+                        <div class="my-3 py-3 border rounded border-primary-subtle px-0 px-md-3" style="background-color:#5889d1">
                             <h3 class="d-block">Album name:</h3>
                             <h4>{{ $album->name}}</h4>
                             <p>Launched: {{ $album->launch_date }}</p>
