@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BandController;
+use App\Http\Controllers\AlbumController;
 
 /*
 Registo de routes para registo, login e logout tratadas por Fortify em app/Providers/FortifyServiceProvider.php - registadas no método boot() quando precisam de uma view definida por nós.
@@ -13,14 +14,10 @@ Nota: fortify é headless. Retorna a view, mas como apresentamos essa view fica 
     !!! O campo user_type, no array $fillable, em App\Models\User não pode ser mass assignable, sob pena de exposição completa a uma injecção do parâmetro no acto de criação de um utilizador. Mudar o valor user_type !!!
     !!! deve ser feito explicitamente por um utilizador administrador. O valor não deve ser atribuído no acto de criação de um utilizador. Deixar o valor por defeito que a DB cria. Ver https://laravel.com/docs/11.x/eloquent#mass-assignment !!!
 
-Nota 2: as routes geridas via Fortify têm nome: php artisan route:list
-    A documentação aqui é fraca. Só se consegue ver o nome das rotas, o controlador e o verbo http esperado. Para mais info, ver vendor/laravel/fortify/[...], em particular routes e [...]http/controllers.
-    Parece propositado, no sentido de que o funcionamento interno destes mecanismos não é relevante para o utilizador.
-
-Nota 3: para personalizar colunas da tabela users é necessário adicionar a criação do campo em app/Actions/Fortify/CreateNewUser.php. Neste caso estamos a forçar a criação de um user standard com o código 1. Admin terá
+Nota 2: para personalizar colunas da tabela users é necessário adicionar a criação do campo em app/Actions/Fortify/CreateNewUser.php. Neste caso estamos a forçar a criação de um user standard com o código 1. Admin terá
     código 0 e será manipulado directamente na DB. Se quiséssemos inserir inputs, seria imperativo validá-los primeiro, no array passado a Validator::make().
 
-Nota 4:
+Nota 3:
 
 Para melhorar segurança e não expor identificadores da DB ao público (ver cheat sheet da OWASP https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html#mitigation, melhor
     resposta em https://stackoverflow.com/questions/396164/exposing-database-ids-security-risk e qualquer outra pesquisa similar a "is it safe to expose database ids?") foi implementada uma coluna para uuid nas tabelas que precisam
@@ -28,24 +25,19 @@ Para melhorar segurança e não expor identificadores da DB ao público (ver che
     sempre o mesmo e não estejamos a falar de biliões de registos). Um uuid não é criptograficamente seguro e, para a nossa aplicação, não precisa de ser. Precisa apenas de ser suficientemente aleatório para ser único e não expor
     ao público dados da DB que podem ser usados para, por exemplo, fazer um scrape iterativo dos conteúdos, ou adivinhar o volume de armazenamento.
     
-    A metodologia de implementação consiste no uso de Str::uuid() numa coluna 'uuid' indexada. Esta indexação representa uma penalização de performance da DB em acções de inserção e eliminação de registos que possuam esta coluna,
-    embora seja relativamente consensual que o impacto no desempenho é compensado pelos benefícios do padrão (ver, por exemplo, https://www.reddit.com/r/PostgreSQL/comments/mi78aq/any_significant_performance_disadvantage_to_using/).
-    A nossa implementação vai depender do tamanho da nossa DB. Se não for muito grande, não é necessário indexar os uuids e o impacto sobre o desempenho de lookups é negligenciável.
-    Caso contrário, sofreremos o impacto, mas manteremos o benefício de segurança que a utilização deste registo fornece (nomeadamente, não expor ao público ids usados na DB, ou pistas sobre o volume de
-    armazenamento da nossa DB).
-    
-    Não é usado Str::orderedUuid() (ver, por exemplo, https://itnext.io/laravel-the-mysterious-ordered-uuid-29e7500b4f8) porque não será preciso ordenar nada com base nos uuids. Para isso existem as chaves primárias. Não usar esta
-    forma de uuid tem ainda a vantagem de não expor o timestamp das operações INSERT, uma vez que, mais uma vez, o uuid não é criptograficamente seguro, mas sim meramente codificado, e o timestamp em orderedUuid() consta do início da string.
+    A metodologia de implementação consiste no uso de uuid() numa coluna 'uuid' indexada por defeito, mas não ordenada. O Laravel não permite a criação de campos únicos sem os indexar.
+    Esta indexação representa uma penalização de performance da DB em acções de inserção e eliminação de registos que possuam esta coluna, embora seja relativamente consensual 
+    que o impacto no desempenho é compensado pelos benefícios do padrão (ver, por exemplo, https://www.reddit.com/r/PostgreSQL/comments/mi78aq/any_significant_performance_disadvantage_to_using/).
     
     Para os efeitos deste trabalho, foi indexada a coluna uuid para presumir a pior performance possível (https://laravel.com/docs/11.x/migrations#available-index-types). Uma vez que não é chave, não é usado o trait 'hasUuids'
-    (ver https://laravel.com/docs/11.x/eloquent#uuid-and-ulid-keys)
+    (ver https://laravel.com/docs/11.x/eloquent#uuid-and-ulid-keys). Será alterado para Str::orderedUuid() se o desempenho de queries for demasiado baixo.
 */
 
 
 
 /*
 Criamos o resource controller sem as routes que não vão precisar de middleware para verificar autenticação. Por outras palavras, todas as routes agrupadas abaixo serão controladas pelo middleware 'auth'.
-As que não precisem deste controlo ficam necessariamente definidas *depois do grupo*, sob pena de colisão de rotas (excepto para '/'). Isto parece ir contra a documentação 
+As que não precisem deste controlo ficam necessariamente definidas depois do grupo, sob pena de colisão de rotas (excepto para '/'). Isto parece ir contra a documentação 
 (ver https://laravel.com/docs/11.x/controllers#restful-supplementing-resource-controllers)
 mas atentemos ao facto de não estarmos a *adicionar* uma rota para além das por defeito, mas sim a condicionar uma já existente. Se a rota bands.show constar antes do grupo condicionado por middleware,
 ao tentarmos invocar o método get() na rota bands.create (URI: /bands/create), será antes invocado o método get() na rota bands.show (URI /bands/{uuid}).
@@ -53,22 +45,53 @@ Apenas podemos presumir que uma colisão no sentido oposto não acontece porque,
 
 Nota: criar o resource controller dentro do grupo de routes não é exemplificado na documentação. É teste nosso, mas parece funcionar como esperado. Registar uma route única retorna um objecto \Illuminate\Routing\Route. Registar
 um resource controller retorna um objecto \Illuminate\Routing\PendingResourceRegistration. O método group() da classe RouteRegistrar parece preparado para lidar com o assunto.
-
 */
 
-Route::middleware(['can:create,App\Models\User', 'auth'])->group(function () { // middleware 'can' usa a UserPolicy em App\Policies\UserPolicy. Escrever o nosso seria fácil. O desafio está em usar as ferramentas que já vêm com a framework.
+Route::middleware(['auth'])->group(function () {
+    // De especial atenção é que esta sintaxe não permite passar vários argumentos para o middleware. A documentação aqui é fraca e dispersa. Existem alternativas como controller middleware, mas a
+    // documentação não é explícita quanto a passar múltiplos argumentos e seria preciso mais tempo para explorar. 
     Route::resource('bands', BandController::class)->except([
-        'index', 'show'
-    ]);    
+        'index',
+        'show'
+    ]);
+    
+    // Middleware 'can' usa a UserPolicy em App\Policies\UserPolicy. Escrever o nosso seria fácil. O desafio está em usar as ferramentas que já vêm com a framework, o que facilitará updates e manutenção mais tarde.
+    // "band" neste último parâmetro precisou de um bind no boot() de AppServiceProvider
+    // Pode-se não introduzir este argumento porque o default do segundo parâmetro na UserPolicy é null. Como só pede um Model, também serve para qualquer outro modelo
+    Route::get('/bands/create', [BandController::class, 'create'])->name('bands.create')->middleware('can:create,\App\Models\User,band');
 });
+
+Route::middleware(['auth'])->group(function () {
+    // De especial atenção é que esta sintaxe não permite passar vários argumentos para o middleware. A documentação aqui é fraca e dispersa. Existem alternativas como controller middleware, mas a
+    // documentação não é explícita quanto a passar múltiplos argumentos e seria preciso mais tempo para explorar. 
+    Route::resource('albums', AlbumController::class)->except([
+        'index', // Não parece necessária uma página para mostrar apenas álbuns, do modo que a aplicação está organizada
+        'show', // Não parece necessária uma página para mostrar um único álbum, do modo que a aplicação está organizada
+        'edit',
+        'update',
+        'destroy',
+        'create',
+        'store'
+    ]);
+
+    // Middleware 'can' usa a UserPolicy em App\Policies\UserPolicy. Escrever o nosso seria fácil. O desafio está em usar as ferramentas que já vêm com a framework, o que facilitará updates e manutenção mais tarde.
+    // Tecnicamente não é preciso os dois middlewares, mas sempre é segurança em profundidade
+    Route::get('/albums/create/{band}', [AlbumController::class, 'create'])->name('albums.create')->middleware(['can:create,\App\Models\User,album']);
+    Route::post('/albums', [AlbumController::class, 'store'])->name('albums.store')->middleware(['can:create,\App\Models\User,album']);
+    Route::get('/albums/{album}', [AlbumController::class, 'edit'])->name('albums.edit')->middleware(['can:edit,\App\Models\User,album']);
+    Route::put('/albums/{album}', [AlbumController::class, 'update'])->name('albums.update')->middleware(['can:update,\App\Models\User,album']);
+    Route::delete('/albums/{album}', [AlbumController::class, 'destroy'])->name('albums.destroy')->middleware(['can:delete,\App\Models\User,album']); // Vamos apenas fazer hard deletes
+});
+
 Route::get('/', [BandController::class, 'index'])->name('home');
-Route::get('/bands/{uuid}', [BandController::class, 'show'])->name('bands.show');
+Route::get('/bands/{band}', [BandController::class, 'show'])->name('bands.show');
+
 
 /*
 Nota 5:
 
 Embora tenha criado as routes todas por si, os métodos do resource controller não querem saber o que passamos como argumento. Por exemplo, para ver uma banda específica, embora o método index() já tenha um argumento $id,
-isto é apenas por conveniência; podemos passar e usar qualquer argumento para continuar a executar a lógica que queremos. Para mostrar uma banda, o controller só sabe que precisa de um argumento no método show(), nós é que
+isto é apenas por conveniência; podemos passar e usar qualquer argumento para continuar a executar a lógica que queremos. Para mostrar uma banda, o controller só sabe que precisa de um argumento no método show(), nós
 decidimos o que queremos que apareça no url (no nosso caso, o uuid, não o id).
 
 Nota 6:
@@ -89,3 +112,8 @@ Suspeito que isto seja, ou um bug, ou uma feature do Laravel: façamos o que fiz
 Verifiquei todos os symlinks, todas as referências ao directório storage, inclusivamente tentei gravar uma imagem com a config do disk 'public' comentada. Sem sucesso. É *sempre*
 criado um symlink em storage. 
 */
+
+// Redireccionar para a página anterior com mensagem de erro (não implementado). Redireccionar para uma página qualquer sem feedback é mau UX, mas o código seria este:
+// Route::fallback(function () {
+//     return redirect()->route('home');
+// });

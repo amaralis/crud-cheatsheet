@@ -11,7 +11,11 @@ class Album extends Model
 {
     use HasFactory;
 
-    // protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'band_id',
+        'launch_date'
+    ];
 
     public function songs(): HasMany
     {

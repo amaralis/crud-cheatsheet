@@ -1,3 +1,5 @@
+{{-- Esta organização de views beneficiaria imenso de components --}}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,11 +22,13 @@
                 <!-- Collapsible wrapper -->
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left links -->
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                        <a class="nav-link" href="{{ route('bands.create') }}">Add Band</a>
-                        </li>
-                    </ul>
+                    {{-- @can('create', Auth::user()) --}}
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                            <a class="nav-link" href="{{ route('bands.create') }}">Add Band</a>
+                            </li>
+                        </ul>
+                    {{-- @endcan --}}
                     <!-- Left links -->
                 </div>
                 <!-- Collapsible wrapper -->
@@ -57,7 +61,7 @@
                             </li>
                         </ul>
                         {{-- cheeky styling with bootstrap here --}}
-                        <form action="{{ route('logout') }}" method="POST" class="">
+                        <form action="{{ route('logout') }}" method="POST">
                             @csrf
                             <button type="submit" class="nav-link">Logout</button>
                         </form>

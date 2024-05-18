@@ -8,7 +8,7 @@
                     <div class="d-flex">
                         <div class="d-flex flex-wrap align-items-start">
                             @if ($band->cover_image == null)
-                                <img class="band-img" src="{{ Storage::url('images/default-band.jpg') }}" alt="default picture of band">
+                                <img class="band-img" src="{{ Storage::url('images/default_band.jpg') }}" alt="default picture of band">
                             @else
                                 <img class="band-img" src="{{ Storage::url('images/'.$band->cover_image) }}" alt="picture of {{ $band->name }}">                                
                             @endif

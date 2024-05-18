@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -16,7 +17,7 @@ return new class extends Migration
             $table->string('name', length: 100);
             $table->string('cover_image', length: 500)->nullable();
             $table->timestamps();
-            $table->uuid('uuid')->unique();
+            $table->uuid('uuid')->unique()->default(Str::uuid());
         });
     }
 

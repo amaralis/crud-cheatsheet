@@ -15,7 +15,7 @@ class BandController extends Controller //implements HasMiddleware
     public function index()
     {
         $bands = Band::all();
-        return view('bands.view_all', compact('bands'));
+        return view('bands.index', compact('bands'));
     }
 
     /**
@@ -23,7 +23,7 @@ class BandController extends Controller //implements HasMiddleware
      */
     public function create()
     {
-        return view('bands.view_create');
+        return view('bands.create');
     }
 
     /**
@@ -37,7 +37,6 @@ class BandController extends Controller //implements HasMiddleware
         $band = new Band;
         $band->name = $bandName;
         $band->cover_image = pathinfo($filePath)['basename'];
-        $band->uuid = Str::uuid();
         $band->save();
         $band->refresh();
         
@@ -47,10 +46,9 @@ class BandController extends Controller //implements HasMiddleware
     /**
      * Display the specified resource.
      */
-    public function show(string $uuid)
+    public function show(Band $band)
     {
-        $band = Band::where('uuid', $uuid)->first();
-        return view('bands.view_band', compact('band'));
+        return view('bands.show', compact('band'));
     }
 
     /**
