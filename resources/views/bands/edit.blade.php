@@ -15,7 +15,7 @@
                     <input class="form-control" name="file" type="file" id="band-image-form" accept=".png,.jpg">
                     {{-- Sem restrições de tamanho de ficheiro --}}
                 </div>
-                <button type="submit" class="btn btn-primary my-3">Update band name</button>
+                <button type="submit" class="btn btn-primary my-3">Update band</button>
             
             </div>
         </form>

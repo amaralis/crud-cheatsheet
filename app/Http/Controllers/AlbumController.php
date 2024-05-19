@@ -79,9 +79,20 @@ class AlbumController extends Controller
      */
     public function update(Request $request, Album $album)
     {
-        $album->name = $request->name;
+        $oldImg = $album->cover_image;
+        
+        if ($request->has('file')) {
+            $album->cover_image = pathinfo(
+                Storage::disk('images')->putFile('/', $request->file('file'))
+            )['basename'];
+            Storage::disk('images')->delete($oldImg);
+        }
+
+        if (!empty($request->name)) {
+            $album->name = $request->name;
+        }
+
         $album->save();
-        $album->fresh();
         return redirect()->back();
     }
 

@@ -77,8 +77,8 @@ class BandController extends Controller //implements HasMiddleware
     public function update(Request $request, Band $band)
     {
         $oldImg = $band->cover_image;
+        
         if ($request->has('file')) {
-            // $filePath = Storage::disk('images')->putFile('/', $request->file('file'));
             $band->cover_image = pathinfo(
                 Storage::disk('images')->putFile('/', $request->file('file'))
                     )['basename'];
@@ -89,9 +89,7 @@ class BandController extends Controller //implements HasMiddleware
             $band->name = $request->name;
         }
 
-        $band->save();
-        $band->fresh();
-        
+        $band->save();        
         return redirect()->back();
     }
 
