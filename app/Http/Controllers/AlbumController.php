@@ -26,7 +26,6 @@ class AlbumController extends Controller
      */
     public function store(Request $request)
     {
-
         $date = Carbon::createFromFormat('Y-m-d', $request->launch_date)->toDateString(); // Sem validação nenhuma, só como exemplo de parse, talvez até devesse ser feito no Blade
         $filePath = "";
         if($request->has('file')){

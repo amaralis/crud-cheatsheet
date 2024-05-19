@@ -10,7 +10,11 @@ class Song extends Model
 {
     use HasFactory;
 
-    // protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'album_id',
+        'uuid'
+    ];
 
     public function album(): BelongsTo
     {

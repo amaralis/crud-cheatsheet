@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Song;
+use App\Models\Album;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class SongController extends Controller
 {
@@ -17,9 +21,9 @@ class SongController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Album $album)
     {
-        //
+        return view('songs.create', compact('album'));
     }
 
     /**
@@ -27,7 +31,17 @@ class SongController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $album = Album::where('uuid', $request->album_uuid)->first();
+
+        $song = new Song([
+            'album_id' => $album->id,
+            'name' => $request->name,
+            'uuid' => Str::uuid()
+        ]);
+
+        $song->save();
+
+        return redirect()->back();
     }
 
     /**
@@ -57,8 +71,9 @@ class SongController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Song $song): RedirectResponse
     {
-        //
+        $song->delete();
+        return redirect()->back();
     }
 }

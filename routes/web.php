@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BandController;
+use App\Http\Controllers\SongController;
 use App\Http\Controllers\AlbumController;
 
 /*
@@ -48,9 +49,11 @@ um resource controller retorna um objecto \Illuminate\Routing\PendingResourceReg
 */
 
 Route::middleware(['auth'])->group(function () {    
-    // Middleware 'can' usa a UserPolicy em App\Policies\UserPolicy. Escrever o nosso seria fácil. O desafio está em usar as ferramentas que já vêm com a framework, o que facilitará updates e manutenção mais tarde.
-    // "band" neste último parâmetro precisou de um bind no boot() de AppServiceProvider
-    // Pode-se não introduzir este argumento porque o default do segundo parâmetro na UserPolicy é null. Como só pede um Model, também serve para qualquer outro modelo
+    // Middleware 'can' usa a UserPolicy em App\Policies\UserPolicy. Escrever o nosso seria fácil.
+    // O desafio está em usar as ferramentas que já vêm com a framework, o que facilitará actualizações, alterações e manutenção mais tarde.
+    // "band" e "album" foram route-bound no boot() de AppServiceProvider aos respectivos modelos através do uuid (yay security)
+    // O segundo argumento do middleware 'can' pode não se introduzir, uma vez que o segundo parâmetro na UserPolicy é null. Como só pede um Model, também serve para qualquer outro modelo
+
     Route::get('/bands/create', [BandController::class, 'create'])->name('bands.create')->middleware('can:create,\App\Models\User,band');
     Route::post('/bands', [BandController::class, 'store'])->name('bands.store')->middleware(['can:create,\App\Models\User,band']);
     Route::get('/bands/{band}/edit', [BandController::class, 'edit'])->name('bands.edit')->middleware('can:edit,\App\Models\User,band');
@@ -62,11 +65,20 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/albums/{album}', [AlbumController::class, 'edit'])->name('albums.edit')->middleware(['can:edit,\App\Models\User,album']);
     Route::put('/albums/{album}', [AlbumController::class, 'update'])->name('albums.update')->middleware(['can:update,\App\Models\User,album']);
     Route::delete('/albums/{album}', [AlbumController::class, 'destroy'])->name('albums.destroy')->middleware(['can:delete,\App\Models\User,album']); // Vamos apenas fazer hard deletes
+
+    Route::get('/songs/create/{album}', [SongController::class, 'create'])->name('songs.create')->middleware(['can:create,\App\Models\User,song']);
+    Route::post('/songs', [SongController::class, 'store'])->name('songs.store')->middleware(['can:create,\App\Models\User,song']);
+    Route::delete('/songs/{song}', [SongController::class, 'destroy'])->name('songs.destroy')->middleware(['can:delete,\App\Models\User,song']); // Vamos apenas fazer hard deletes
+
 });
 
 Route::get('/', [BandController::class, 'index'])->name('home');
 Route::get('/bands/{band}', [BandController::class, 'show'])->name('bands.show');
 
+// Redireccionar para a página anterior com mensagem de erro (não implementado). Redireccionar para uma página qualquer sem feedback é mau UX, mas o código seria este:
+// Route::fallback(function () {
+//     return redirect()->route('home');
+// });
 
 /*
 Nota 5:
@@ -94,7 +106,3 @@ Verifiquei todos os symlinks, todas as referências ao directório storage, incl
 criado um symlink em storage. 
 */
 
-// Redireccionar para a página anterior com mensagem de erro (não implementado). Redireccionar para uma página qualquer sem feedback é mau UX, mas o código seria este:
-// Route::fallback(function () {
-//     return redirect()->route('home');
-// });

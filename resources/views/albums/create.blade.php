@@ -9,7 +9,7 @@
             <div class="my-5">
 
                 <label for="name" class="form-label">Insert album name:</label>
-                <input type="text" name="name" class="form-control" id="name" placeholder="Insert new name for your album here">
+                <input type="text" name="name" class="form-control" id="name" placeholder="Insert your album's name here">
 
                 {{-- Aqui devia estar um calendário para validar inputs --}}
                 <label for="launch_date" class="form-label">Insert album launch date (YYYY-MM-DD):</label>

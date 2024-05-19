@@ -52,6 +52,9 @@
 
                             {{-- @if(Auth::user()) --}}
                                 <div class="d-flex justify-content-end">
+                                    {{-- @can('create', Auth::user()) --}}
+                                        <a href="{{ route('songs.create', $album->uuid) }}" class="btn btn-info m-1">Add song</a>
+                                    {{-- @endcan --}}
                                     {{-- @can('update', Auth::user()) --}}
                                         <a href="{{ route('albums.edit', $album->uuid) }}" class="btn btn-warning m-1">Edit album</a>
                                     {{-- @endcan

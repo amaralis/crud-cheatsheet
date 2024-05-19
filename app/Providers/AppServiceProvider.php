@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
-use App\Models\Album;
 use App\Models\Band;
+use App\Models\Song;
+use App\Models\Album;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -28,6 +29,10 @@ class AppServiceProvider extends ServiceProvider
 
         Route::bind('band', function (string $value) {
             return Band::where('uuid', $value)->firstOrFail();
+        });
+
+        Route::bind('song', function (string $value) {
+            return Song::where('uuid', $value)->firstOrFail();
         });
     }
 }
