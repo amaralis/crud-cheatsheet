@@ -10,7 +10,7 @@
                                 @if ($band->cover_image == null)
                                     <img class="band-img mx-3 pe-5" src="{{ Storage::url('images/default_band.jpg') }}" alt="default picture of band">
                                 @else
-                                    <img class="band-img mx-3 pe-5" src="{{ Storage::url('images/'.$band->cover_image) }}" alt="picture of {{ $band->name }}">                                
+                                    <img class="band-img mx-3 pe-5" src="{{ Storage::url('images/'.$band->cover_image) }}" alt="picture of {{ $band->name }}">
                                 @endif
                                 <h1 class="align-self-center pt-3 pt-sm-0 mb-0" >{{ $band->name }}</h1>
                             </div>
@@ -26,7 +26,7 @@
                                     <a href="{{ route('albums.create', $band->uuid) }}" class="btn btn-info m-1">Add album</a>
                                 {{-- @endcan --}}
                                 {{-- @can('update', Auth::user()) --}}
-                                    <a href="{{ route('bands.show', $band->uuid) }}" class="btn btn-warning m-1">Edit band</a>
+                                    <a href="{{ route('bands.edit', $band->uuid) }}" class="btn btn-warning m-1">Edit band</a>
                                 {{-- @endcan --}}
                                 {{-- @can('delete', Auth::user()) --}}
                                     <a href="{{ route('bands.show', $band->uuid) }}" class="btn btn-danger m-1">Delete band</a>

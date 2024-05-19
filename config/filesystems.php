@@ -47,7 +47,7 @@ return [
         'images' => [
             'driver' => 'local',
             'root' => storage_path('app/public/images'),
-            'url' => env('APP_URL').'/',
+            'url' => env('APP_URL').'/images',
             'visibility' => 'public',
             'throw' => false,
         ],
@@ -78,7 +78,9 @@ return [
     */
 
     'links' => [
-        public_path('storage') => storage_path('app/public'),
+        // Removido o symlink para não duplicar imagens. Case seja necessário armazenar outros ficheiros,
+        // inserir o symlink com a pasta desejada no 'public_path'
+        // public_path('storage') => storage_path('app/public'),
         public_path('images') => storage_path('app/public/images')
     ],
 

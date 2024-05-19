@@ -51,8 +51,6 @@ class AlbumController extends Controller
             'uuid' => Str::uuid()
         ]);
 
-        // dd(pathinfo($filePath)['basename']);
-
         $album->save();
         $album->refresh();
         
@@ -70,18 +68,16 @@ class AlbumController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $uuid)
+    public function edit(Album $album)
     {
-        $album = Album::where('uuid', $uuid)->first();
         return view('albums.edit', compact('album'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $uuid)
+    public function update(Request $request, Album $album)
     {
-        $album = Album::where('uuid', $uuid)->first();
         $album->name = $request->name;
         $album->save();
         $album->fresh();
@@ -91,9 +87,13 @@ class AlbumController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $uuid)
+    public function destroy(Album $album)
     {
+        dd(Storage::disk('images')->url($album->cover_image));
+        if($album->cover_image !== 'default_album.jpg'){
+
+        }
+        die();
         $album = Album::where('uuid', $uuid)->first();
-        dd($album);
     }
 }

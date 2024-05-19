@@ -52,13 +52,15 @@ Route::middleware(['auth'])->group(function () {
     // documentação não é explícita quanto a passar múltiplos argumentos e seria preciso mais tempo para explorar. 
     Route::resource('bands', BandController::class)->except([
         'index',
-        'show'
+        'show',
+        'edit'
     ]);
     
     // Middleware 'can' usa a UserPolicy em App\Policies\UserPolicy. Escrever o nosso seria fácil. O desafio está em usar as ferramentas que já vêm com a framework, o que facilitará updates e manutenção mais tarde.
     // "band" neste último parâmetro precisou de um bind no boot() de AppServiceProvider
     // Pode-se não introduzir este argumento porque o default do segundo parâmetro na UserPolicy é null. Como só pede um Model, também serve para qualquer outro modelo
     Route::get('/bands/create', [BandController::class, 'create'])->name('bands.create')->middleware('can:create,\App\Models\User,band');
+    Route::get('/bands/{band}/edit', [BandController::class, 'edit'])->name('bands.edit')->middleware('can:edit,\App\Models\User,band');
 });
 
 Route::middleware(['auth'])->group(function () {

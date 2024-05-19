@@ -62,17 +62,20 @@ class BandController extends Controller //implements HasMiddleware
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Band $band)
     {
-        //
+        return view('bands.edit', compact('band'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Band $band)
     {
-        //
+        $band->name = $request->name;
+        $band->save();
+        
+        return redirect()->back();
     }
 
     /**

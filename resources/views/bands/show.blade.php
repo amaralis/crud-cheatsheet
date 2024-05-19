@@ -25,7 +25,7 @@
                                     <a href="{{ route('albums.create', $band->uuid) }}" class="btn btn-info m-1">Add album</a>
                                 {{-- @endcan --}}
                                 {{-- @can('update', Auth::user()) --}}
-                                    <a href="{{ route('bands.show', $band->uuid) }}" class="btn btn-warning m-1">Edit band</a>
+                                    <a href="{{ route('bands.edit', $band->uuid) }}" class="btn btn-warning m-1">Edit band</a>
                                 {{-- @endcan --}}
                                 {{-- @can('delete', Auth::user()) --}}
                                     <a href="{{ route('bands.show', $band->uuid) }}" class="btn btn-danger m-1">Delete band</a>

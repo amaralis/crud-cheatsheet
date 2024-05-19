@@ -51,10 +51,9 @@ class UserPolicy
         return $user->user_type === 0;
     }
 
-    public function edit(User $user, Album $album): bool // Estes métodos esperam *sempre* o User como primeiro argumento. A assinatura tem de o ter
+    public function edit(User $user, Model $model = null): bool // Estes métodos esperam *sempre* o User como primeiro argumento. A assinatura tem de o ter
     {
-        dd($album);
-        if($user->user_type === 0){
+        if($user->user_type === 0 || $user->user_type === 1){
             return true;
         }
         return false;
