@@ -89,11 +89,14 @@ class AlbumController extends Controller
      */
     public function destroy(Album $album)
     {
-        dd(Storage::disk('images')->url($album->cover_image));
         if($album->cover_image !== 'default_album.jpg'){
-
+            if(Storage::disk('images')->delete($album->cover_image)){
+                $album->delete();
+            } else {
+                dd('could not delete album at url'. Storage::url($album->cover_image));
+            }
         }
-        die();
-        $album = Album::where('uuid', $uuid)->first();
+        
+        return redirect()->back();
     }
 }

@@ -46,6 +46,21 @@
                             <h4>{{ $album->name}}</h4>
                             <p>Launched: {{ $album->launch_date }}</p>
 
+                            {{-- @if(Auth::user()) --}}
+                                <div class="d-flex justify-content-end">
+                                    {{-- @can('update', Auth::user()) --}}
+                                        <a href="{{ route('albums.edit', $album->uuid) }}" class="btn btn-warning m-1">Edit album</a>
+                                    {{-- @endcan
+                                    @can('delete', Auth::user()) --}}
+                                        <form action="{{route('albums.destroy', $album->uuid)}}" method="post">
+                                            @csrf
+                                            @method('delete')
+                                            <button type="submit" class="btn btn-danger m-1">Delete album</button>
+                                        </form>
+                                    {{-- @endcan --}}
+                                </div>
+                            {{-- @endif --}}
+
                             <div class="accordion" id="album-{{ $album->uuid }}-accordion">
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
