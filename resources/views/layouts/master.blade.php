@@ -22,13 +22,13 @@
                 <!-- Collapsible wrapper -->
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left links -->
-                    {{-- @can('create', Auth::user()) --}}
+                    @can('create', Auth::user(),Band::class)
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
                             <a class="nav-link" href="{{ route('bands.create') }}">Add Band</a>
                             </li>
                         </ul>
-                    {{-- @endcan --}}
+                    @endcan
                     <!-- Left links -->
                 </div>
                 <!-- Collapsible wrapper -->

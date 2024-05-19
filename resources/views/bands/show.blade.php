@@ -19,23 +19,23 @@
             </h2>
             <div id="band-{{ $band->uuid }}-accordion-collapse" class="accordion-collapse collapse" data-bs-parent="#band-{{ $band->uuid }}-accordion">
                 <div class="accordion-body  px-0 px-md-3" style="background-color:#a8c5f0">
-                        {{-- @if(Auth::user()) --}}
+                        @if(Auth::user())
                             <div class="d-flex justify-content-end">
-                                {{-- @can('create', Auth::user()) --}}
+                                @can('create', Auth::user())
                                     <a href="{{ route('albums.create', $band->uuid) }}" class="btn btn-info m-1">Add album</a>
-                                {{-- @endcan --}}
-                                {{-- @can('update', Auth::user()) --}}
+                                @endcan
+                                @can('update', Auth::user())
                                     <a href="{{ route('bands.edit', $band->uuid) }}" class="btn btn-warning m-1">Edit band</a>
-                                {{-- @endcan --}}
-                                {{-- @can('delete', Auth::user()) --}}
+                                @endcan
+                                @can('delete', Auth::user())
                                     <form action="{{route('bands.destroy', $band->uuid)}}" method="post">
                                         @csrf
                                         @method('delete')
                                         <button type="submit" class="btn btn-danger m-1">Delete band</button>
                                     </form>
-                                {{-- @endcan --}}
+                                @endcan
                             </div>
-                        {{-- @endif --}}
+                        @endif
                     <h2 class="py-3 px-0 px-md-3">{{ $band->albums->count() }} Albums:</h2>
         
                     @foreach ($band->albums as $album)
@@ -50,23 +50,23 @@
                             <h4>{{ $album->name}}</h4>
                             <p>Launched: {{ $album->launch_date }}</p>
 
-                            {{-- @if(Auth::user()) --}}
+                            @if(Auth::user())
                                 <div class="d-flex justify-content-end">
-                                    {{-- @can('create', Auth::user()) --}}
+                                    @can('create', Auth::user())
                                         <a href="{{ route('songs.create', $album->uuid) }}" class="btn btn-info m-1">Add song</a>
-                                    {{-- @endcan --}}
-                                    {{-- @can('update', Auth::user()) --}}
+                                    @endcan
+                                    @can('update', Auth::user())
                                         <a href="{{ route('albums.edit', $album->uuid) }}" class="btn btn-warning m-1">Edit album</a>
-                                    {{-- @endcan
-                                    @can('delete', Auth::user()) --}}
+                                    @endcan
+                                    @can('delete', Auth::user())
                                         <form action="{{route('albums.destroy', $album->uuid)}}" method="post">
                                             @csrf
                                             @method('delete')
                                             <button type="submit" class="btn btn-danger m-1">Delete album</button>
                                         </form>
-                                    {{-- @endcan --}}
+                                    @endcan
                                 </div>
-                            {{-- @endif --}}
+                            @endif
 
                             <div class="accordion" id="album-{{ $album->uuid }}-accordion">
                                 <div class="accordion-item">
@@ -81,20 +81,20 @@
                                                     <div class="p-3 px-md-3 my-1 border rounded border-primary-subtle" style="background-color:#082858; color:#eee">
                                                         <h5>Song name:</h5>
                                                         <p> {{ $song->name }}</p>
-                                                        {{-- @auth --}}
+                                                        @auth
                                                             <div class="d-flex justify-content-end">
-                                                                {{-- @can('update',Auth::user(),App\Models\Song) --}}
+                                                                @can('update',Auth::user(),Song::class)
                                                                     <a href="{{ route('songs.edit', $song->uuid) }}" class="btn btn-warning m-1">Edit song</a>
-                                                                {{-- @endcan
-                                                                @can('delete',Auth::user(),App\Models\Song) --}}
+                                                                @endcan
+                                                                @can('delete',Auth::user(),Song::class)
                                                                     <form action="{{route('songs.destroy', $song->uuid)}}" method="post">
                                                                         @csrf
                                                                         @method('delete')
                                                                         <button type="submit" class="btn btn-danger m-1">Delete song</button>
                                                                     </form>
-                                                                {{-- @endcan --}}
+                                                                @endcan
                                                             </div>
-                                                        {{-- @endauth --}}
+                                                        @endauth
                                                     </div>
                                                 @endforeach
 
