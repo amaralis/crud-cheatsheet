@@ -39,7 +39,7 @@ class AlbumController extends Controller
         if($request->has('file')){
             $filePath = Storage::disk('images')->putFile('/', $request->file('file'));
         } else {
-            $filePath = Storage::url('images/default_album.jpg');
+            $filePath = Storage::disk('images')->url('default_album.jpg');
         }
 
         $band = Band::where('uuid', $request->band_uuid)->first();

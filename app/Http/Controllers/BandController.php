@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Album;
 use Illuminate\Http\RedirectResponse;
 
+use function PHPUnit\Framework\isEmpty;
+
 class BandController extends Controller //implements HasMiddleware
 {    
     /**
@@ -38,7 +40,7 @@ class BandController extends Controller //implements HasMiddleware
         if ($request->has('file')) {
             $filePath = Storage::disk('images')->putFile('/', $request->file('file'));
         } else {
-            $filePath = Storage::url('images/default_band.jpg');
+            $filePath = Storage::disk('images')->url('default_band.jpg');
         }
 
         $band = new Band([
@@ -74,8 +76,21 @@ class BandController extends Controller //implements HasMiddleware
      */
     public function update(Request $request, Band $band)
     {
-        $band->name = $request->name;
+        $oldImg = $band->cover_image;
+        if ($request->has('file')) {
+            // $filePath = Storage::disk('images')->putFile('/', $request->file('file'));
+            $band->cover_image = pathinfo(
+                Storage::disk('images')->putFile('/', $request->file('file'))
+                    )['basename'];
+            Storage::disk('images')->delete($oldImg);
+        }
+
+        if(!empty($request->name)){
+            $band->name = $request->name;
+        }
+
         $band->save();
+        $band->fresh();
         
         return redirect()->back();
     }
