@@ -6,10 +6,7 @@ use App\Models\Band;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Album;
 use Illuminate\Http\RedirectResponse;
-
-use function PHPUnit\Framework\isEmpty;
 
 class BandController extends Controller //implements HasMiddleware
 {    
@@ -77,7 +74,7 @@ class BandController extends Controller //implements HasMiddleware
     public function update(Request $request, Band $band)
     {
         $oldImg = $band->cover_image;
-        
+
         if ($request->has('file')) {
             $band->cover_image = pathinfo(
                 Storage::disk('images')->putFile('/', $request->file('file'))

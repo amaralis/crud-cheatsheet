@@ -12,13 +12,6 @@ use Illuminate\Support\Facades\Storage;
 
 class AlbumController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
     /**
      * Show the form for creating a new resource.
@@ -56,14 +49,6 @@ class AlbumController extends Controller
         $album->refresh();
         
         return redirect()->route('bands.show', $band->uuid);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
     }
 
     /**

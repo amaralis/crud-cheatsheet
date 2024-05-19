@@ -47,38 +47,16 @@ Nota: criar o resource controller dentro do grupo de routes não é exemplificad
 um resource controller retorna um objecto \Illuminate\Routing\PendingResourceRegistration. O método group() da classe RouteRegistrar parece preparado para lidar com o assunto.
 */
 
-Route::middleware(['auth'])->group(function () {
-    // De especial atenção é que esta sintaxe não permite passar vários argumentos para o middleware. A documentação aqui é fraca e dispersa. Existem alternativas como controller middleware, mas a
-    // documentação não é explícita quanto a passar múltiplos argumentos e seria preciso mais tempo para explorar. 
-    Route::resource('bands', BandController::class)->except([
-        'index',
-        'show',
-        'edit'
-    ]);
-    
+Route::middleware(['auth'])->group(function () {    
     // Middleware 'can' usa a UserPolicy em App\Policies\UserPolicy. Escrever o nosso seria fácil. O desafio está em usar as ferramentas que já vêm com a framework, o que facilitará updates e manutenção mais tarde.
     // "band" neste último parâmetro precisou de um bind no boot() de AppServiceProvider
     // Pode-se não introduzir este argumento porque o default do segundo parâmetro na UserPolicy é null. Como só pede um Model, também serve para qualquer outro modelo
     Route::get('/bands/create', [BandController::class, 'create'])->name('bands.create')->middleware('can:create,\App\Models\User,band');
+    Route::post('/bands', [BandController::class, 'store'])->name('bands.store')->middleware(['can:create,\App\Models\User,band']);
     Route::get('/bands/{band}/edit', [BandController::class, 'edit'])->name('bands.edit')->middleware('can:edit,\App\Models\User,band');
-    Route::get('/bands/{band}', [BandController::class, 'destroy'])->name('bands.destroy')->middleware('can:delete,\App\Models\User,band');
-});
+    Route::put('/bands/{band}', [BandController::class, 'update'])->name('bands.update')->middleware('can:update,\App\Models\User,band');
+    Route::delete('/bands/{band}', [BandController::class, 'destroy'])->name('bands.destroy')->middleware('can:delete,\App\Models\User,band');
 
-Route::middleware(['auth'])->group(function () {
-    // De especial atenção é que esta sintaxe não permite passar vários argumentos para o middleware. A documentação aqui é fraca e dispersa. Existem alternativas como controller middleware, mas a
-    // documentação não é explícita quanto a passar múltiplos argumentos e seria preciso mais tempo para explorar. 
-    Route::resource('albums', AlbumController::class)->except([
-        'index', // Não parece necessária uma página para mostrar apenas álbuns, do modo que a aplicação está organizada
-        'show', // Não parece necessária uma página para mostrar um único álbum, do modo que a aplicação está organizada
-        'edit',
-        'update',
-        'destroy',
-        'create',
-        'store'
-    ]);
-
-    // Middleware 'can' usa a UserPolicy em App\Policies\UserPolicy. Escrever o nosso seria fácil. O desafio está em usar as ferramentas que já vêm com a framework, o que facilitará updates e manutenção mais tarde.
-    // Tecnicamente não é preciso os dois middlewares, mas sempre é segurança em profundidade
     Route::get('/albums/create/{band}', [AlbumController::class, 'create'])->name('albums.create')->middleware(['can:create,\App\Models\User,album']);
     Route::post('/albums', [AlbumController::class, 'store'])->name('albums.store')->middleware(['can:create,\App\Models\User,album']);
     Route::get('/albums/{album}', [AlbumController::class, 'edit'])->name('albums.edit')->middleware(['can:edit,\App\Models\User,album']);
