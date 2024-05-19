@@ -79,7 +79,9 @@ class BandController extends Controller //implements HasMiddleware
             $band->cover_image = pathinfo(
                 Storage::disk('images')->putFile('/', $request->file('file'))
                     )['basename'];
-            Storage::disk('images')->delete($oldImg);
+            if($oldImg !== 'default_band.jpg'){
+                Storage::disk('images')->delete($oldImg);
+            }
         }
 
         if(!empty($request->name)){

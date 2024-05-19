@@ -40,7 +40,10 @@ class UserPolicy
      */
     public function update(User $user, Model $model = null): bool
     {
-        return $user->user_type === 0;
+        if ($user->user_type === 0 || $user->user_type === 1) {
+            return true;
+        }
+        return false;
     }
 
     /**
