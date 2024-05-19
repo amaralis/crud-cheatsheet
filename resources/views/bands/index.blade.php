@@ -8,11 +8,11 @@
                         <div class="d-flex">
                             <div class="d-flex flex-wrap align-items-start">
                                 @if ($band->cover_image == null)
-                                    <img class="band-img" src="{{ Storage::url('images/default_band.jpg') }}" alt="default picture of band">
+                                    <img class="band-img mx-3 pe-5" src="{{ Storage::url('images/default_band.jpg') }}" alt="default picture of band">
                                 @else
-                                    <img class="band-img" src="{{ Storage::url('images/'.$band->cover_image) }}" alt="picture of {{ $band->name }}">                                
+                                    <img class="band-img mx-3 pe-5" src="{{ Storage::url('images/'.$band->cover_image) }}" alt="picture of {{ $band->name }}">                                
                                 @endif
-                                <h1 class="align-self-center ps-0 ps-lg-5 pt-3 pt-lg-0 mb-0" >{{ $band->name }}</h1>
+                                <h1 class="align-self-center pt-3 pt-sm-0 mb-0" >{{ $band->name }}</h1>
                             </div>
                         </div>
                     </button>

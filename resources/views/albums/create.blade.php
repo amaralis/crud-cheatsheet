@@ -3,7 +3,7 @@
 @can('create', App\Models\User::class, App\Models\Album::class)
 {{-- Mais uma vez, a documentação não é explícita quanto a passar múltiplos argumentos para o @can, mas por esta altura já percebemos o esquema --}}
     <section class="row justify-content-center">
-        <form action="{{ route('albums.store') }}" method="post" style="max-width:10cm my-3">
+        <form action="{{ route('albums.store') }}" method="post" style="max-width:10cm my-3" enctype="multipart/form-data">
             @csrf
 
             <div class="my-5">
@@ -22,7 +22,7 @@
 
                 <input type="hidden" name="band_uuid" value="{{ $band->uuid }}">
 
-                <button type="submit" class="btn btn-primary my-3">Update album name</button>
+                <button type="submit" class="btn btn-primary my-3">Add album</button>
             
             </div>
         </form>

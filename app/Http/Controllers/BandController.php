@@ -32,11 +32,19 @@ class BandController extends Controller //implements HasMiddleware
     public function store(Request $request)
     {
         // Sem outras validações. Em contexto comercial, seria necessário limitar, por exemplo, tamanho, e dar feedback sobre sucesso ou não do upload
-        $filePath = Storage::disk('images')->putFile('/', $request->file('file'));
-        $bandName = $request->name;
-        $band = new Band;
-        $band->name = $bandName;
-        $band->cover_image = pathinfo($filePath)['basename'];
+        $filePath = "";
+        if ($request->has('file')) {
+            $filePath = Storage::disk('images')->putFile('/', $request->file('file'));
+        } else {
+            $filePath = Storage::url('images/default_band.jpg');
+        }
+
+        $band = new Band([
+            'name' => $request->name,
+            'cover_image' => $request->has('file') ? pathinfo($filePath)['basename'] : 'default_band.jpg',
+            'uuid' => Str::uuid()
+        ]);
+
         $band->save();
         $band->refresh();
         

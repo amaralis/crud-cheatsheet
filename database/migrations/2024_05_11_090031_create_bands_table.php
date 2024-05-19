@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -15,9 +14,9 @@ return new class extends Migration
         Schema::create('bands', function (Blueprint $table) {
             $table->id();
             $table->string('name', length: 100);
-            $table->string('cover_image', length: 500)->nullable();
+            $table->string('cover_image', length: 500)->nullable()->default('default_band.jpg');;
             $table->timestamps();
-            $table->uuid('uuid')->unique()->default(Str::uuid());
+            $table->uuid('uuid')->unique();
         });
     }
 

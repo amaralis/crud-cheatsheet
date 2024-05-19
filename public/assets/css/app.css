@@ -1,3 +1,7 @@
-.band-img, .album-img {
-    width: clamp(5cm, 10cm, 25dvw) !important;
+.band-img {
+    width: clamp(3cm, 10cm, 10dvw) !important;
+}
+
+.album-img {
+    width: clamp(2cm, 5cm, 5dvw) !important;
 }

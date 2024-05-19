@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -16,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('band_id');
             $table->foreign('band_id')->references('id')->on('bands');
-            $table->string('cover_image', length:500)->nullable()->default();
+            $table->string('cover_image', length:500)->nullable()->default('default_album.jpg');
             $table->string('name');
             $table->date('launch_date')->default(now());
-            $table->uuid('uuid')->unique()->default(Str::uuid());
+            $table->uuid('uuid')->unique();
             $table->timestamps();
         });
     }

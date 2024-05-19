@@ -14,7 +14,9 @@ class Album extends Model
     protected $fillable = [
         'name',
         'band_id',
-        'launch_date'
+        'launch_date',
+        'uuid',
+        'cover_image'
     ];
 
     public function songs(): HasMany

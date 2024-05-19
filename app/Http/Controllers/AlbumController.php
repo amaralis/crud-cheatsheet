@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Band;
 use App\Models\Album;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -31,19 +32,29 @@ class AlbumController extends Controller
      */
     public function store(Request $request)
     {
+
         $date = Carbon::createFromFormat('Y-m-d', $request->launch_date)->toDateString(); // Sem validação nenhuma, só como exemplo de parse, talvez até devesse ser feito no Blade
-        $filePath = Storage::disk('images')->putFile('/', $request->file('file'));
+        $filePath = "";
+        if($request->has('file')){
+            $filePath = Storage::disk('images')->putFile('/', $request->file('file'));
+        } else {
+            $filePath = Storage::url('images/default_album.jpg');
+        }
+
         $band = Band::where('uuid', $request->band_uuid)->first();
 
         $album = new Album([
             'band_id' => $band->id,
             'name' => $request->name,
             'launch_date' => $date,
-            'cover_image' => pathinfo($filePath)['basename']
+            'cover_image' => pathinfo($filePath)['basename'],
+            'uuid' => Str::uuid()
         ]);
 
+        // dd(pathinfo($filePath)['basename']);
+
         $album->save();
-        $album->fresh();
+        $album->refresh();
         
         return redirect()->route('bands.show', $band->uuid);
     }

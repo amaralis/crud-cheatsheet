@@ -11,6 +11,12 @@ class Band extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'cover_image',
+        'uuid'
+    ];
+
     public function albums(): HasMany
     {
         return $this->hasMany(Album::class);
