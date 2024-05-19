@@ -55,17 +55,24 @@ class SongController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Song $song)
     {
-        //
+        return view('songs.edit', compact('song'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Song $song): RedirectResponse
     {
-        //
+        if(empty($request->name)){
+            return redirect()->back();
+        }
+
+        $song->name = $request->name;
+        $song->save();
+        
+        return redirect()->back();
     }
 
     /**

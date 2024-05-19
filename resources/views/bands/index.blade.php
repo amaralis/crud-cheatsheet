@@ -88,7 +88,7 @@
                                                         {{-- @auth --}}
                                                             <div class="d-flex justify-content-end">
                                                                 {{-- @can('update',Auth::user(),App\Models\Song) --}}
-                                                                    {{-- <a href="{{ route('songs.edit', $song->uuid) }}" class="btn btn-warning m-1">Edit song</a> --}}
+                                                                    <a href="{{ route('songs.edit', $song->uuid) }}" class="btn btn-warning m-1">Edit song</a>
                                                                 {{-- @endcan
                                                                 @can('delete',Auth::user(),App\Models\Song) --}}
                                                                     <form action="{{route('songs.destroy', $song->uuid)}}" method="post">

@@ -69,6 +69,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/songs/create/{album}', [SongController::class, 'create'])->name('songs.create')->middleware(['can:create,\App\Models\User,song']);
     Route::post('/songs', [SongController::class, 'store'])->name('songs.store')->middleware(['can:create,\App\Models\User,song']);
     Route::delete('/songs/{song}', [SongController::class, 'destroy'])->name('songs.destroy')->middleware(['can:delete,\App\Models\User,song']); // Vamos apenas fazer hard deletes
+    Route::get('/songs/{song}', [SongController::class, 'edit'])->name('songs.edit')->middleware(['can:edit,\App\Models\User,song']);
+    Route::put('/songs/{song}', [SongController::class, 'update'])->name('songs.update')->middleware(['can:update,\App\Models\User,song']);
 
 });
 
