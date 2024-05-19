@@ -28,7 +28,11 @@
                                     <a href="{{ route('bands.edit', $band->uuid) }}" class="btn btn-warning m-1">Edit band</a>
                                 {{-- @endcan --}}
                                 {{-- @can('delete', Auth::user()) --}}
-                                    <a href="{{ route('bands.show', $band->uuid) }}" class="btn btn-danger m-1">Delete band</a>
+                                    <form action="{{route('bands.destroy', $band->uuid)}}" method="post">
+                                        @csrf
+                                        @method('delete')
+                                        <button type="submit" class="btn btn-danger m-1">Delete band</button>
+                                    </form>
                                 {{-- @endcan --}}
                             </div>
                         {{-- @endif --}}

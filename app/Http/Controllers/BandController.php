@@ -81,8 +81,16 @@ class BandController extends Controller //implements HasMiddleware
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Band $band)
     {
-        //
+        if ($band->cover_image !== 'default_band.jpg') {
+            if (Storage::disk('images')->delete($band->cover_image)) {
+                $band->delete();
+            } else {
+                dd('could not delete band at url' . Storage::url($band->cover_image));
+            }
+        }
+
+        return redirect()->back();
     }
 }

@@ -61,6 +61,7 @@ Route::middleware(['auth'])->group(function () {
     // Pode-se não introduzir este argumento porque o default do segundo parâmetro na UserPolicy é null. Como só pede um Model, também serve para qualquer outro modelo
     Route::get('/bands/create', [BandController::class, 'create'])->name('bands.create')->middleware('can:create,\App\Models\User,band');
     Route::get('/bands/{band}/edit', [BandController::class, 'edit'])->name('bands.edit')->middleware('can:edit,\App\Models\User,band');
+    Route::get('/bands/{band}', [BandController::class, 'destroy'])->name('bands.destroy')->middleware('can:delete,\App\Models\User,band');
 });
 
 Route::middleware(['auth'])->group(function () {
