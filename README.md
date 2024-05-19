@@ -5,3 +5,4 @@ Run `php artisan migrate --seed --seeder=BandSeeder` for your first seed, or `ph
 # Don't forget
 
 - Run `composer install` for dependencies
+- Include port in your APP_URL constant in .env
