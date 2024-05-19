@@ -8,9 +8,9 @@
                         <div class="d-flex">
                             <div class="d-flex flex-wrap align-items-start">
                                 @if ($band->cover_image == null)
-                                    <img class="band-img mx-3 pe-5" src="{{ Storage::url('images/default_band.jpg') }}" alt="default picture of band">
+                                    <img class="band-img mx-3 pe-5" src="{{ Storage::disk('images')->url('default_band.jpg') }}" alt="default picture of band">
                                 @else
-                                    <img class="band-img mx-3 pe-5" src="{{ Storage::url('images/'.$band->cover_image) }}" alt="picture of {{ $band->name }}">
+                                    <img class="band-img mx-3 pe-5" src="{{ Storage::disk('images')->url($band->cover_image) }}" alt="picture of {{ $band->name }}">
                                 @endif
                                 <h1 class="align-self-center pt-3 pt-sm-0 mb-0" >{{ $band->name }}</h1>
                             </div>
@@ -40,9 +40,9 @@
 
                             <div class="my-3 py-3 border rounded border-primary-subtle px-0 px-md-3" style="background-color:#5889d1">
                                 @if ($album->cover_image == null)
-                                    <img class="album-img" src="{{ Storage::url('images/default_band.jpg') }}" alt="default picture of album">
+                                    <img class="album-img" src="{{ Storage::disk('images')->url('default_band.jpg') }}" alt="default picture of album">
                                 @else
-                                    <img class="album-img" src="{{ Storage::url('images/'.$album->cover_image) }}" alt="picture of {{ $album->name }}">                                
+                                    <img class="album-img" src="{{ Storage::disk('images')->url($album->cover_image) }}" alt="picture of {{ $album->name }}">                                
                                 @endif
                                 <h3 class="d-block">Album name:</h3>
                                 <h4>{{ $album->name}}</h4>
