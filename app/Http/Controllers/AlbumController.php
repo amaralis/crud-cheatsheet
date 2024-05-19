@@ -89,14 +89,25 @@ class AlbumController extends Controller
      */
     public function destroy(Album $album)
     {
+        // Apagar recursivamente (evitando cascade, sobre a qual não se tem qualquer controlo)
         if($album->cover_image !== 'default_album.jpg'){
             if(Storage::disk('images')->delete($album->cover_image)){
-                $album->delete();
-            } else {
-                dd('could not delete album at url'. Storage::url($album->cover_image));
+                if($album->songs()->exists()){
+                    $album->songs()->each(function ($song){
+                        $song->delete();
+                    });
+                }
+            }
+        } else {
+            if ($album->songs()->exists()) {
+                $album->songs()->each(function ($song) {
+                    $song->delete();
+                });
             }
         }
         
+        $album->delete();
+
         return redirect()->back();
     }
 }

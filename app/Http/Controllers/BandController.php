@@ -6,6 +6,7 @@ use App\Models\Band;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Album;
 
 class BandController extends Controller //implements HasMiddleware
 {    
@@ -83,14 +84,35 @@ class BandController extends Controller //implements HasMiddleware
      */
     public function destroy(Band $band)
     {
+        // Apagar recursivamente (evitando cascade, sobre a qual não se tem qualquer controlo)
         if ($band->cover_image !== 'default_band.jpg') {
             if (Storage::disk('images')->delete($band->cover_image)) {
-                $band->delete();
-            } else {
-                dd('could not delete band at url' . Storage::url($band->cover_image));
+                if($band->albums()->exists()){
+                    $band->albums()->each(function ($album) {
+                        if($album->songs()->exists()){
+                            $album->songs()->each(function ($song){
+                                $song->delete();
+                            });
+                        }
+                        $album->delete(); // Tem de se invocar o método da subclasse, não de Model, porque este espera um id
+                    });
+                }
+            }
+        } else {
+            if ($band->albums()->exists()){
+                $band->albums()->each(function ($album) {
+                    if ($album->songs()->exists()) {
+                        $album->songs()->each(function ($song) {
+                            $song->delete();
+                        });
+                    }
+                    $album->delete(); // Tem de se invocar o método da subclasse, não de Model, porque este espera um id
+                });
             }
         }
 
-        return redirect()->back();
+        $band->delete();
+
+        return redirect()->route('home');
     }
 }
