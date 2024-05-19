@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Band;
 use App\Models\Album;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -87,27 +88,9 @@ class AlbumController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Album $album)
+    public function destroy(Album $album): RedirectResponse
     {
-        // Apagar recursivamente (evitando cascade, sobre a qual não se tem qualquer controlo)
-        if($album->cover_image !== 'default_album.jpg'){
-            if(Storage::disk('images')->delete($album->cover_image)){
-                if($album->songs()->exists()){
-                    $album->songs()->each(function ($song){
-                        $song->delete();
-                    });
-                }
-            }
-        } else {
-            if ($album->songs()->exists()) {
-                $album->songs()->each(function ($song) {
-                    $song->delete();
-                });
-            }
-        }
-        
-        $album->delete();
-
+        $album->deleteRecursive();
         return redirect()->back();
     }
 }

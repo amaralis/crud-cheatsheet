@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Album;
+use Illuminate\Http\RedirectResponse;
 
 class BandController extends Controller //implements HasMiddleware
 {    
@@ -82,37 +83,9 @@ class BandController extends Controller //implements HasMiddleware
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Band $band)
+    public function destroy(Band $band): RedirectResponse
     {
-        // Apagar recursivamente (evitando cascade, sobre a qual não se tem qualquer controlo)
-        if ($band->cover_image !== 'default_band.jpg') {
-            if (Storage::disk('images')->delete($band->cover_image)) {
-                if($band->albums()->exists()){
-                    $band->albums()->each(function ($album) {
-                        if($album->songs()->exists()){
-                            $album->songs()->each(function ($song){
-                                $song->delete();
-                            });
-                        }
-                        $album->delete(); // Tem de se invocar o método da subclasse, não de Model, porque este espera um id
-                    });
-                }
-            }
-        } else {
-            if ($band->albums()->exists()){
-                $band->albums()->each(function ($album) {
-                    if ($album->songs()->exists()) {
-                        $album->songs()->each(function ($song) {
-                            $song->delete();
-                        });
-                    }
-                    $album->delete(); // Tem de se invocar o método da subclasse, não de Model, porque este espera um id
-                });
-            }
-        }
-
-        $band->delete();
-
+        $band->deleteRecursive();
         return redirect()->route('home');
     }
 }
