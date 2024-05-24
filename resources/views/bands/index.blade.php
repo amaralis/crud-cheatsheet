@@ -19,9 +19,9 @@
                 </h2>
                 <div id="band-{{ $band->uuid }}-accordion-collapse" class="accordion-collapse collapse" data-bs-parent="#band-{{ $band->uuid }}-accordion">
                     <div class="accordion-body  px-0 px-md-3" style="background-color:#a8c5f0">
-                        @auth
-                            <div class="d-flex justify-content-end">
-                                <a href="{{ route('bands.show', $band->uuid) }}" class="btn btn-info m-1">View band</a>
+                        <div class="d-flex justify-content-end">
+                            <a href="{{ route('bands.show', $band->uuid) }}" class="btn btn-info m-1">View band</a>
+                            @auth
                                 @can('create', Auth::user())
                                     <a href="{{ route('albums.create', $band->uuid) }}" class="btn btn-info m-1">Add album</a>
                                 @endcan
@@ -35,8 +35,8 @@
                                         <button type="submit" class="btn btn-danger m-1">Delete band</button>
                                     </form>
                                 @endcan
+                            @endauth
                             </div>
-                        @endauth
                         
                         <h2 class="mt-3 mt-md-0 px-0 px-md-3">{{ $band->albums->count() }} Albums:</h2>
             
